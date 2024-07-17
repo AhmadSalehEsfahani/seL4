@@ -492,10 +492,6 @@ cap_t Arch_createObject(object_t t, void *regionBase, word_t userSize, bool_t de
                    (word_t)regionBase);
 
     case seL4_ARM_PageTableObject:
-        cleanCacheRange_PoU((word_t)regionBase,
-                            (word_t)regionBase + MASK(seL4_PageTableBits),
-                            addrFromPPtr(regionBase));
-
 #ifdef CONFIG_ARM_HYPERVISOR_SUPPORT
         /** AUXUPD: "(True, ptr_retyps 1
               (Ptr (ptr_val \<acute>regionBase) :: (pte_C[512]) ptr))" */
@@ -503,7 +499,9 @@ cap_t Arch_createObject(object_t t, void *regionBase, word_t userSize, bool_t de
         /** AUXUPD: "(True, ptr_retyps 1
               (Ptr (ptr_val \<acute>regionBase) :: (pte_C[256]) ptr))" */
 #endif /* CONFIG_ARM_HYPERVISOR_SUPPORT */
-
+        cleanCacheRange_PoU((word_t)regionBase,
+                            (word_t)regionBase + MASK(seL4_PageTableBits),
+                            addrFromPPtr(regionBase));
         return cap_page_table_cap_new(false, asidInvalid, 0,
                                       (word_t)regionBase);
 
